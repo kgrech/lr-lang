@@ -1,0 +1,18 @@
+[package]
+name = "lr_lang"
+version = "0.1.0"
+authors = ["Konstantin Grech <kgrech@mail.ru>"]
+edition = "2018"
+
+
+[build-dependencies]
+lalrpop = { version = "0.19", features = ["lexer"] }
+
+[dependencies]
+clap = { version = "3.2", features = [ "derive" ]}
+lalrpop-util = "0.19"
+regex = "1"
+thiserror = "1.0"
+
+[dev-dependencies]
+rstest = "0.15.0"
