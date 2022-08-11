@@ -1,0 +1,5 @@
+{
+    let string: String = "100";
+    let num: Int = 5;
+    let wrong: String = string * num;
+}

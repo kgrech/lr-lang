@@ -1,6 +1,7 @@
+use crate::ast::expression::{Expr, Opcode};
 use crate::ast::program::Program;
-use crate::ast::expression::{Opcode, Expr };
 use crate::ast::statement::Statement;
+use crate::ast::value::{Type, Value};
 use crate::ast::utils::append;
 
 use std::str::FromStr;
@@ -11,15 +12,31 @@ Identifier: String = {
     r"[a-zA-Z][a-zA-z_0-9]*" => <>.to_owned()
 };
 
-Num: i32 = {
+IntNum: i32 = {
     r"-?[0-9]+" => i32::from_str(<>).unwrap()
 };
 
+FloatNum: f32 = {
+    r"-?[0-9]+\.[0-9]+" => f32::from_str(<>).unwrap()
+};
+
+StringLiteral: String = {
+    r#""[^"]*""# => <>[1..<>.len() - 1].to_owned()
+};
+
 Term: Box<Expr> = {
-    Num => Box::new(Expr::Number(<>)),
+    IntNum => Box::new(Expr::Constant(Value::Int(<>))),
+    FloatNum => Box::new(Expr::Constant(Value::Float(<>))),
+    StringLiteral => Box::new(Expr::Constant(Value::String(<>))),
     Identifier => Box::new(Expr::Identifier(<>)),
     "(" <Expr> ")"
 };
+
+Type: Type = {
+    "Int" => Type::Int,
+    "String" => Type::String,
+    "Float" => Type::Float,
+}
 
 Expr: Box<Expr> = {
     Expr ExprOp Factor => Box::new(Expr::Op(<>)),
@@ -42,7 +59,7 @@ FactorOp: Opcode = {
 };
 
 Statement: Statement = {
-    "let" <Identifier> "=" <Expr> ";" => Statement::new_definition(<>),
+    "let" <Identifier> ":" <Type> "=" <Expr> ";" => Statement::new_definition(<>),
     <Identifier> "=" <Expr> ";" => Statement::new_assignment(<>)
 };
 

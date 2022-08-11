@@ -1,0 +1,5 @@
+{
+    let string: String = "100";
+    let num: Float = 5.0;
+    let wrong: String = num - string;
+}

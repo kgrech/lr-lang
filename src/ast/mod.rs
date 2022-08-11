@@ -2,6 +2,7 @@ pub mod expression;
 pub mod program;
 pub mod statement;
 pub mod utils;
+pub mod value;
 
 lalrpop_mod!(#[allow(clippy::all)] pub lr_lang); // synthesized by LALRPOP
 
@@ -14,9 +15,10 @@ pub mod test {
 
     const TEST_PROGRAMS_DIR: &str = env!("CARGO_MANIFEST_DIR");
 
-    pub fn get_test_program(file_name: &str) -> Program {
+    pub fn get_test_program(folder: &str, file_name: &str) -> Program {
         let path = Path::new(TEST_PROGRAMS_DIR)
             .join("test_programs")
+            .join(folder)
             .join(file_name);
         let program_text = fs::read_to_string(path).expect("Unable to read the program file");
         lr_lang::ProgramParser::new()

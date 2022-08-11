@@ -1,0 +1,3 @@
+{
+    let wrong: String = "100" / 5;
+}

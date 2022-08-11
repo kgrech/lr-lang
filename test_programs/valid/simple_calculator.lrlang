@@ -1,0 +1,27 @@
+{
+    let my_variable: Int = 5;
+    let my_variable_1: Int = my_variable;
+
+    let sum: Int = my_variable_1 + 5;
+    let mult: Int = sum * 120;
+    let div: Int = mult / 10;
+    div = div / 2;
+    let expression: Int = 2 * div + 10 / 2;
+
+    let float: Float = 5.5;
+    let float_plus_float: Float = float + 5.5;
+    let float_plus_int: Float = float + 5;
+    let int_plus_float: Float = 5 + float;
+
+    let float_minus_float: Float = float - 5.0;
+    let float_minus_int: Float = float - 5;
+    let int_minus_float: Float = 5 - float;
+
+    let float_times_float: Float = float * 2.0;
+    let float_times_int: Float = float * 2;
+    let int_times_float: Float = 2 * float;
+
+    let float_div_float: Float = float / 5.0;
+    let float_div_int: Float = float / 5;
+    let int_div_float: Float = 11 / 10.0;
+}

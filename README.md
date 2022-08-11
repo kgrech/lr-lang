@@ -7,6 +7,7 @@ Written for learning purposes.
 Read the tutorial on dev-to:
 - [Part I: a bit of boring theory](https://dev.to/kgrech/writing-a-new-programming-language-part-i-a-bit-of-boring-theory-65e)
 - [Part II: Variables and expressions](https://dev.to/kgrech/writing-a-new-programming-language-part-ii-variables-and-expressions-hh4)
+- [Part III: Type System](https://dev.to/kgrech/writing-a-new-programming-language-part-iii-type-system-2ji3)
 
 
 ## Run simple program

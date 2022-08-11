@@ -1,27 +1,32 @@
 use crate::ast::expression::Expr;
+use crate::ast::value::Type;
 
-pub struct StatementBody {
-    pub identifier: String,
-    pub expression: Box<Expr>,
-}
-
+#[derive(PartialEq, Debug)]
 pub enum Statement {
-    Assignment(StatementBody),
-    Definition(StatementBody),
+    Assignment {
+        identifier: String,
+        expression: Box<Expr>,
+    },
+    Definition {
+        identifier: String,
+        expression: Box<Expr>,
+        value_type: Type,
+    },
 }
 
 impl Statement {
     pub fn new_assignment(identifier: String, expression: Box<Expr>) -> Self {
-        Self::Assignment(StatementBody {
+        Self::Assignment {
             identifier,
             expression,
-        })
+        }
     }
 
-    pub fn new_definition(identifier: String, expression: Box<Expr>) -> Self {
-        Self::Definition(StatementBody {
+    pub fn new_definition(identifier: String, value_type: Type, expression: Box<Expr>) -> Self {
+        Self::Definition {
             identifier,
+            value_type,
             expression,
-        })
+        }
     }
 }

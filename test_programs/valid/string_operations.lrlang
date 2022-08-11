@@ -1,0 +1,19 @@
+{
+    let string: String = "100";
+    let string_concat_1: String = "abc" + string;
+    let string_concat_2: String = string + string;
+    let string_concat_3: String = string + " " + "abc";
+    let string_concat_4: String = "abc" + "efg";
+
+    let string_plus_int: String = "int=" + 5;
+    let string_plus_float: String = "float=" + 5.5;
+
+    let int_var: Int = 5;
+    let string_plus_int_var: String = "int=" + int_var;
+
+    let float_var: Float = 5.5;
+    let string_plus_float_var: String = "float=" + float_var;
+
+    let redefine: Int = 5;
+    let redefine: String = "new_value";
+}
