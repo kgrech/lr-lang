@@ -6,5 +6,15 @@
     let pi: Float = 3.14;
     let r: Int = 5;
     let square: Float = 2 * pi * r * r;
-    let value: String = "The square of the circle with the r = " + r + " is " + square;
+    let value: String = "The square of the circle with the r = " + r + " is " + square + ".";
+    if square > 100.0 && square <= 300.0 {
+        value = value + " It is > 100.";
+        if square <= 200.0 {
+            value = value + " It is <= 200.";
+        } else {
+            value = value + " It is > 200.";
+        }
+    } else {
+        value = value + " It is <= 100.";
+    }
 }

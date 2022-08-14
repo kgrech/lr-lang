@@ -1,3 +1,4 @@
+use crate::ast::block::Block;
 use crate::ast::expression::Expr;
 use crate::ast::value::Type;
 
@@ -12,6 +13,7 @@ pub enum Statement {
         expression: Box<Expr>,
         value_type: Type,
     },
+    Block(Block),
 }
 
 impl Statement {
@@ -28,5 +30,9 @@ impl Statement {
             value_type,
             expression,
         }
+    }
+
+    pub fn new_block(block: Block) -> Self {
+        Self::Block(block)
     }
 }

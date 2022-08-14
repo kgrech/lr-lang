@@ -15,7 +15,7 @@ mod test {
     pub fn test_simple_calculator() {
         let program = get_test_program("valid", "simple_calculator.lrlang");
         let mut root_frame = Frame::default();
-        execute_program(&mut root_frame, &program).unwrap();
+        root_frame = execute_program(root_frame, &program).unwrap();
 
         assert_eq!(
             root_frame.variable_value("my_variable").unwrap(),
@@ -90,7 +90,7 @@ mod test {
     pub fn test_string_operations() {
         let program = get_test_program("valid", "string_operations.lrlang");
         let mut root_frame = Frame::default();
-        execute_program(&mut root_frame, &program).unwrap();
+        root_frame = execute_program(root_frame, &program).unwrap();
 
         assert_eq!(
             root_frame.variable_value("string").unwrap(),
@@ -137,7 +137,7 @@ mod test {
     pub fn test_circle_square() {
         let program = get_test_program("valid", "circle_square.lrlang");
         let mut root_frame = Frame::default();
-        execute_program(&mut root_frame, &program).unwrap();
+        root_frame = execute_program(root_frame, &program).unwrap();
 
         assert_eq!(
             root_frame.variable_value("hello_world").unwrap(),
@@ -145,7 +145,10 @@ mod test {
         );
         assert_eq!(
             root_frame.variable_value("value").unwrap(),
-            Value::String("The square of the circle with the r = 5 is 157".to_owned())
+            Value::String(
+                "The square of the circle with the r = 5 is 157. It is > 100. It is <= 200."
+                    .to_owned()
+            )
         );
     }
 
@@ -172,10 +175,31 @@ mod test {
     )]
     pub fn test_runtime_error(#[case] file: &str, #[case] expected_error: &str) {
         let program = get_test_program("runtime_error", &format!("{}.lrlang", file));
-        let mut root_frame = Frame::default();
-        let result = execute_program(&mut root_frame, &program);
+        let root_frame = Frame::default();
+        let result = execute_program(root_frame, &program);
         assert!(result.is_err());
         let error = result.err().unwrap().to_string();
         assert_eq!(expected_error, error);
+    }
+
+    #[test]
+    pub fn test_simple_blocks() {
+        let program = get_test_program("valid", "simple_blocks.lrlang");
+        let mut root_frame = Frame::default();
+        root_frame = execute_program(root_frame, &program).unwrap();
+
+        assert_eq!(root_frame.variable_value("var_1").unwrap(), Value::Int(7));
+        assert_eq!(root_frame.variable_value("result").unwrap(), Value::Int(13));
+        assert!(root_frame.variable_value("var_2").is_err())
+    }
+
+    #[test]
+    pub fn test_if_blocks() {
+        let program = get_test_program("valid", "if_blocks.lrlang");
+        let mut root_frame = Frame::default();
+        root_frame = execute_program(root_frame, &program).unwrap();
+
+        assert_eq!(root_frame.variable_value("var_1").unwrap(), Value::Int(7));
+        assert!(root_frame.variable_value("var_2").is_err());
     }
 }

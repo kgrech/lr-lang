@@ -1,3 +1,4 @@
+use crate::ast::block::Block;
 use crate::ast::expression::{BinaryOpcode, Expr, UnaryOpcode};
 use crate::ast::program::Program;
 use crate::ast::statement::Statement;
@@ -52,32 +53,82 @@ pub fn evalutate_expression(frame: &mut Frame, expr: &Expr) -> Result<Value, Exp
     }
 }
 
-pub fn execute_statement(frame: &mut Frame, statement: &Statement) -> Result<(), RuntimeError> {
+pub fn execute_condition(
+    mut frame: Frame,
+    expr: &Expr,
+    then_block: &[Statement],
+    else_block: &Option<Vec<Statement>>,
+) -> Result<Frame, RuntimeError> {
+    let value = evalutate_expression(&mut frame, expr)?;
+    if let Value::Bool(value) = value {
+        let mut block_frame = Frame::new(Box::new(frame));
+        if value {
+            block_frame = execute_statements(block_frame, then_block)?;
+        } else if let Some(else_block) = else_block {
+            block_frame = execute_statements(block_frame, else_block)?;
+        }
+        Ok(*block_frame.take_parent().unwrap())
+    } else {
+        Err(RuntimeError::NonBooleanCondition(
+            expr.to_string(),
+            (&value).into(),
+        ))
+    }
+}
+
+pub fn execute_block(frame: Frame, block: &Block) -> Result<Frame, RuntimeError> {
+    match block {
+        Block::StatementsBlock(statements) => {
+            let mut block_frame = Frame::new(Box::new(frame));
+            block_frame = execute_statements(block_frame, statements)?;
+            Ok(*block_frame.take_parent().unwrap())
+        }
+        Block::Condition {
+            expression,
+            then_block,
+            else_block,
+        } => execute_condition(frame, expression.as_ref(), then_block, else_block),
+    }
+}
+
+pub fn execute_statement(mut frame: Frame, statement: &Statement) -> Result<Frame, RuntimeError> {
     match statement {
         Statement::Assignment {
             identifier,
             expression,
         } => {
-            let value = evalutate_expression(frame, expression)?;
+            let value = evalutate_expression(&mut frame, expression)?;
             frame.assign_value(identifier, value)?;
+            Ok(frame)
         }
         Statement::Definition {
             identifier,
             expression,
             value_type,
         } => {
-            let value = evalutate_expression(frame, expression)?;
+            let value = evalutate_expression(&mut frame, expression)?;
             frame.define_variable(identifier.clone(), value_type.clone(), value)?;
+            Ok(frame)
+        }
+        Statement::Block(block) => {
+            frame = execute_block(frame, block)?;
+            Ok(frame)
         }
     }
-    Ok(())
 }
 
-pub fn execute_program(frame: &mut Frame, program: &Program) -> Result<(), RuntimeError> {
-    for statement in &program.statements {
-        execute_statement(frame, statement)?
+pub fn execute_statements(
+    mut frame: Frame,
+    statements: &[Statement],
+) -> Result<Frame, RuntimeError> {
+    for statement in statements {
+        frame = execute_statement(frame, statement)?;
     }
-    Ok(())
+    Ok(frame)
+}
+
+pub fn execute_program(frame: Frame, program: &Program) -> Result<Frame, RuntimeError> {
+    execute_statements(frame, &program.statements)
 }
 
 #[cfg(test)]

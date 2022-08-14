@@ -26,6 +26,6 @@ fn main() {
         .parse(&program_text)
         .expect("Unable to parse the program file");
     let mut root_frame = Frame::default();
-    execute_program(&mut root_frame, &program).unwrap();
+    root_frame = execute_program(root_frame, &program).unwrap();
     println!("Main frame: {:#?}", root_frame);
 }

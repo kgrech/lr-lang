@@ -1,0 +1,13 @@
+{
+    let var_1: Int = 5;
+    let result: Int = 0;
+    {
+        let var_2: Int = var_1;
+        {
+            var_2 = var_2 + 1;
+            var_1 = var_1 + 2;
+        }
+        result = var_1 + var_2;
+        let var_1: Int = 0;
+    }
+}

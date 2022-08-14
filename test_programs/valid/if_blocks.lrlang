@@ -1,0 +1,17 @@
+{
+    let var_1: Int = 5;
+    if 0 == 1 || 2 < 3 {
+        var_1 = var_1 + 1;
+        let var_2: String = "local";
+        if 2 != 3 && 2 >= 3 {
+            var_1 = 0;
+        } else {
+            var_1 = var_1 + 1;
+        }
+        if false {
+            var_1 = 0;
+        }
+    } else {
+        var_1 = 0;
+    }
+}

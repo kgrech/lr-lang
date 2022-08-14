@@ -20,6 +20,13 @@ pub struct Frame {
 }
 
 impl Frame {
+    pub fn new(parent: Box<Frame>) -> Self {
+        Self {
+            parent: Some(parent),
+            local_variables: Default::default(),
+        }
+    }
+
     pub fn variable_value(&self, variable_name: &str) -> Result<Value, VariableError> {
         if let Some(value) = self.local_variables.get(variable_name) {
             Ok(value.clone())
@@ -69,5 +76,9 @@ impl Frame {
                 value_type,
             ))
         }
+    }
+
+    pub fn take_parent(&mut self) -> Option<Box<Frame>> {
+        self.parent.take()
     }
 }

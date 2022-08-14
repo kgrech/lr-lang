@@ -1,3 +1,4 @@
+use crate::ast::block::Block;
 use crate::ast::expression::{Expr, BinaryOpcode, UnaryOpcode};
 use crate::ast::program::Program;
 use crate::ast::statement::Statement;
@@ -111,7 +112,8 @@ UnaryOp: UnaryOpcode = {
 
 Statement: Statement = {
     "let" <Identifier> ":" <Type> "=" <Expr> ";" => Statement::new_definition(<>),
-    <Identifier> "=" <Expr> ";" => Statement::new_assignment(<>)
+    <Identifier> "=" <Expr> ";" => Statement::new_assignment(<>),
+    Block => Statement::new_block(<>)
 };
 
 Statements: Vec<Statement> = {
@@ -119,6 +121,12 @@ Statements: Vec<Statement> = {
     Statements Statement => append(<>),
 };
 
+Block: Block = {
+    "{" <Statements> "}" => Block::new_statements(<>),
+    "if" <Expr> "{" <Statements> "}" => Block::new_condition(<>, None),
+    "if" <exp:Expr> "{" <thn:Statements> "}" "else" "{" <els:Statements> "}" => Block::new_condition(exp, thn, Some(els)),
+}
+
 pub Program: Program = {
- "{" <Statements> "}" => Program::new(<>)
+    "{" <Statements> "}" => Program::new(<>)
 }
