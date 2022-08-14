@@ -5,6 +5,7 @@ pub enum Type {
     Int,
     Float,
     String,
+    Bool,
 }
 
 impl Display for Type {
@@ -13,6 +14,7 @@ impl Display for Type {
             Type::Int => write!(f, "Int"),
             Type::Float => write!(f, "Float"),
             Type::String => write!(f, "String"),
+            Type::Bool => write!(f, "Bool"),
         }
     }
 }
@@ -22,6 +24,7 @@ pub enum Value {
     Int(i32),
     Float(f32),
     String(String),
+    Bool(bool),
 }
 
 impl From<&Value> for Type {
@@ -30,6 +33,7 @@ impl From<&Value> for Type {
             Value::Int(_) => Self::Int,
             Value::Float(_) => Self::Float,
             Value::String(_) => Self::String,
+            Value::Bool(_) => Self::Bool,
         }
     }
 }
@@ -40,6 +44,7 @@ impl Display for Value {
             Value::Int(v) => write!(f, "{}", v),
             Value::Float(v) => write!(f, "{}", v),
             Value::String(v) => write!(f, "\"{}\"", v),
+            Value::Bool(v) => write!(f, "{}", v),
         }
     }
 }

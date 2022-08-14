@@ -4,7 +4,7 @@ pub mod statement;
 pub mod utils;
 pub mod value;
 
-lalrpop_mod!(#[allow(clippy::all)] pub lr_lang); // synthesized by LALRPOP
+lalrpop_mod!(#[allow(clippy::all)] #[allow(dead_code)] pub lr_lang); // synthesized by LALRPOP
 
 #[cfg(test)]
 pub mod test {

@@ -1,7 +1,7 @@
 pub mod error;
 pub mod executor;
 pub mod frame;
-pub mod operations;
+mod operations;
 
 #[cfg(test)]
 mod test {

@@ -1,4 +1,4 @@
-use crate::ast::expression::{Expr, Opcode};
+use crate::ast::expression::{Expr, BinaryOpcode, UnaryOpcode};
 use crate::ast::program::Program;
 use crate::ast::statement::Statement;
 use crate::ast::value::{Type, Value};
@@ -24,13 +24,55 @@ StringLiteral: String = {
     r#""[^"]*""# => <>[1..<>.len() - 1].to_owned()
 };
 
+BoolLiteral: bool = {
+    "true" => true,
+    "false" => false,
+};
+
 Term: Box<Expr> = {
     IntNum => Box::new(Expr::Constant(Value::Int(<>))),
     FloatNum => Box::new(Expr::Constant(Value::Float(<>))),
     StringLiteral => Box::new(Expr::Constant(Value::String(<>))),
+    BoolLiteral => Box::new(Expr::Constant(Value::Bool(<>))),
     Identifier => Box::new(Expr::Identifier(<>)),
     "(" <Expr> ")"
 };
+
+pub Expr: Box<Expr> = {
+    Disjunction
+}
+
+Disjunction: Box<Expr> = {
+    Disjunction DisjOp Conjunction => Box::new(Expr::BinaryOp(<>)),
+    Conjunction,
+};
+
+DisjOp: BinaryOpcode = {
+    "||" => BinaryOpcode::Disj,
+}
+
+Conjunction: Box<Expr> = {
+    Conjunction ConjOp Comparison => Box::new(Expr::BinaryOp(<>)),
+    Comparison,
+};
+
+ConjOp: BinaryOpcode = {
+    "&&" => BinaryOpcode::Conj,
+}
+
+Comparison: Box<Expr> = {
+    Summ CompareOp Summ => Box::new(Expr::BinaryOp(<>)),
+    Summ,
+};
+
+CompareOp: BinaryOpcode = {
+    "==" => BinaryOpcode::Equals,
+    "!=" => BinaryOpcode::NotEquals,
+    "<" => BinaryOpcode::Lower,
+    ">" => BinaryOpcode::Greater,
+    "<=" => BinaryOpcode::LowerEquals,
+    ">=" => BinaryOpcode::GreaterEquals,
+}
 
 Type: Type = {
     "Int" => Type::Int,
@@ -38,25 +80,34 @@ Type: Type = {
     "Float" => Type::Float,
 }
 
-Expr: Box<Expr> = {
-    Expr ExprOp Factor => Box::new(Expr::Op(<>)),
+Summ: Box<Expr> = {
+    Summ SummOp Factor => Box::new(Expr::BinaryOp(<>)),
     Factor,
 };
 
-ExprOp: Opcode = {
-    "+" => Opcode::Add,
-    "-" => Opcode::Sub,
+SummOp: BinaryOpcode = {
+    "+" => BinaryOpcode::Add,
+    "-" => BinaryOpcode::Sub,
 };
 
 Factor: Box<Expr> = {
-    Factor FactorOp Term => Box::new(Expr::Op(<>)),
+    Factor FactorOp UnaryResult => Box::new(Expr::BinaryOp(<>)),
+    UnaryResult,
+};
+
+FactorOp: BinaryOpcode = {
+    "*" => BinaryOpcode::Mul,
+    "/" => BinaryOpcode::Div,
+};
+
+UnaryResult: Box<Expr> = {
+    UnaryOp Term => Box::new(Expr::UnaryOp(<>)),
     Term,
 };
 
-FactorOp: Opcode = {
-    "*" => Opcode::Mul,
-    "/" => Opcode::Div,
-};
+UnaryOp: UnaryOpcode = {
+    "!" => UnaryOpcode::Not,
+}
 
 Statement: Statement = {
     "let" <Identifier> ":" <Type> "=" <Expr> ";" => Statement::new_definition(<>),
